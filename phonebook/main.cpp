@@ -5,8 +5,8 @@
 #define COMMAND_NUM 3
 
 //global variable
-char names[CAPACITY][CAPACITY];
-char phonenumbers[CAPACITY][CAPACITY];
+char *names[CAPACITY];
+char *phonenumbers[CAPACITY];
 int num = 0;
 
 int readline();
@@ -60,23 +60,28 @@ int readline() {
 	else if (strcmp(command[0], "exit")==0) {
 		return exit();
 	}
+	else {
+		printf("Please input correct command\n");
+	}
 	return 1;
 }
 
 void add(char *name, char *phonenumber) {
+	names[num] = (char *)malloc(sizeof(char)*(strlen(name) + 1));
+	phonenumbers[num] = (char *)malloc(sizeof(char)*(strlen(phonenumber) + 1));
 
 	strcpy(names[num], name);
 	strcpy(phonenumbers[num], phonenumber);
 	num++;
-	printf("%s was added successfully. %s\n", name, phonenumber);
 
+	printf("%s was added successfully. %s\n", name, phonenumber);
 	return;
 }
 
 void find(char *name) {
 	for (int i = 0; i < num; i++) {
 		if (strcmp(names[i], name) == 0) {
-			printf("%s\n", phonenumbers[i]);
+			printf("%s %s\n",phonenumbers[i], names[i]);
 			return;
 		}
 	}
@@ -84,10 +89,8 @@ void find(char *name) {
 }
 
 void status() {
-	for (int i = 0; i < CAPACITY; i++) {
-		if (strcmp(names[i], "") != 0) {
-			printf("%s %s \n", names[i], phonenumbers[i]);
-		}
+	for (int i = 0; i < num; i++) {
+		printf("%s %s \n", names[i], phonenumbers[i]);
 	}
 	printf("Total %d persions.\n", num);
 }
@@ -95,8 +98,12 @@ void status() {
 void del(char *name) {
 	for (int i = 0; i < num; i++) {
 		if (strcmp(names[i], name) == 0) {
-			strcpy(names[i], "");
-			strcpy(phonenumbers[i], "");
+			strcpy(names[i],names[num - 1]);
+			strcpy(phonenumbers[i],phonenumbers[num - 1]);
+
+			free(names[num - 1]);
+			free(phonenumbers[num - 1]);
+			
 			num--;
 			printf("%s was deleted successfully.\n", name);
 			return;
@@ -106,5 +113,9 @@ void del(char *name) {
 }
 
 int exit() {
+	for (int i = 0; i < num; i++) {
+		free(names[i]);
+		free(phonenumbers[i]);
+	}
 	return 0;
 }
