@@ -2,22 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 #define DIRECTORY_CAPACITY 3
-#define COMMAND_CAPACITY 3
+#define COMMAND_CAPACITY 2
 #define BUFFER_SIZE 100
 
+typedef struct user {
+	char *name;
+	char *phonenumber;
+	char *email;
+	char *group;
+};
+
 //global variable
-char **names;
-char **phonenumbers;
+user *users;
 
-int capacity = DIRECTORY_CAPACITY; //size of arrays.
+
 int num = 0; //number of people in phone directory.
+int capacity = DIRECTORY_CAPACITY; //size of arrays.
 
+void compose_name(char *str);
 void reallocate();
-void read_line(char str[], int limit);
+int read_line(FILE *fp, char str[], int limit);
 int search(char *name);
 void init_directory();
 int process_command();
-void add(char *name, char *phonenumber);
+void add(char *name, char *phonenumber, char*email, char *group);
 void find(char *name);
 void status();
 void del(char *name);
@@ -27,7 +35,6 @@ int exit();
 
 int main() {
 	int stop = 1;
-
 	init_directory();
 
 	while (stop) {
@@ -36,15 +43,34 @@ int main() {
 	}
 }
 
-void read_line(char str[], int limit) {
+void compose_name(char *str) {
+	char *ptr = (char*)malloc(sizeof(char)*(strlen(str) + 1));
+	strcpy(ptr, str);
+	strcpy(str, "");
+
+	int length = 0;
+	char *temp = strtok(ptr, " ");
+	
+	while (temp != NULL) {
+		length += strlen(temp);
+		strcat(str, temp);
+		str[length++] = ' ';
+		str[length] = '\0';
+		temp = strtok(NULL, " ");
+	}
+	str[length - 1] = '\0';
+}
+
+int read_line(FILE * fp, char str[], int limit) {
 	int ch, i = 0;
-	while ((ch = getchar()) == ' ');
-	while (ch != '\n') {
+	while ((ch = fgetc(fp)) == ' ');
+	while (ch != '\n'&&ch != EOF) {
 		if (i < limit - 1)
 			str[i++] = ch;
-		ch = getchar();
+		ch = fgetc(fp);
 	}
 	str[i] = '\0';
+	return i;
 }
 
 int process_command() {
@@ -52,28 +78,41 @@ int process_command() {
 	char command[COMMAND_CAPACITY][BUFFER_SIZE] = { 0 };
 	
 	int num_command = 0;
-	read_line(str, BUFFER_SIZE);
+	read_line(stdin, str, BUFFER_SIZE);
 	char *ptr = strtok(str, " ");
 	while (ptr != NULL) {
-		if (num_command < COMMAND_CAPACITY) {
+		if (num_command == 0) {
 			strcpy(command[num_command++], ptr);
-			ptr = strtok(NULL, " ");
+			ptr = strtok(NULL, "\0");
 		}
 		else {
-			printf("There are too many arguments\n");
-			return -1;
+			strcpy(command[num_command], ptr);
+			compose_name(command[num_command]);
+			break;
 		}
 	}
+	
 
 
 	if (strcmp(command[0], "add")==0) {
 		if (command[1][0]=='\0') {
 			printf("Name is required.\n");
-		}else if (command[2][0]=='\0') {
-			printf("Phonenumber is required.\n");
 		}
 		else {
-			add(command[1], command[2]);
+			char empty[] = " ";
+			char buf2[BUFFER_SIZE];
+			char buf3[BUFFER_SIZE];
+			char buf4[BUFFER_SIZE];
+			printf("Phone: ");
+			read_line(stdin, buf2, BUFFER_SIZE);
+			printf("Email: ");
+			read_line(stdin, buf3, BUFFER_SIZE);
+			printf("Group: ");
+			read_line(stdin, buf4, BUFFER_SIZE);
+			add(command[1], 
+				(strlen(buf2)>0? buf2: empty),
+				(strlen(buf3)>0 ? buf3 : empty),
+				(strlen(buf4)>0 ? buf4 : empty) );
 		}
 	}
 	else if (strcmp(command[0], "load")==0) {
@@ -122,59 +161,45 @@ int process_command() {
 
 void reallocate() {
 	capacity *= 2;
-
-	char **tempname = (char **)malloc(sizeof(char*)*capacity);
-	char **tempphone = (char **)malloc(sizeof(char*)*capacity);
-	
+	user *tempuser = (user*)malloc(sizeof(user)*capacity);
 	for (int i = 0; i < num; i++) {
-		tempname[i] = names[i];
-		tempphone[i] = phonenumbers[i];
+		tempuser[i] = users[i];
 	}
-
-	free(names);
-	free(phonenumbers);
-
-	names = tempname;
-	phonenumbers = tempphone;
+	free(users);
+	users = tempuser;
 }
 
 void init_directory() {
-	names = (char**)malloc(sizeof(char*)*DIRECTORY_CAPACITY);
-	phonenumbers= (char**)malloc(sizeof(char*)*DIRECTORY_CAPACITY);
+	users = (user*)malloc(sizeof(user)*DIRECTORY_CAPACITY);
 }
 
-void add(char *name, char *phonenumber) {
+void add(char *name, char *phonenumber, char*email, char *group) {
 	int i = num;
-	
+
+
 	if (num >= capacity) {
 		reallocate();
 	}
-
-	while (i != 0 && strcmp(name, names[i - 1]) < 0) {
-		free(names[i]);
-		free(phonenumbers[i]);
-		names[i] = (char *)malloc(sizeof(char)*strlen(names[i-1]) + 1);
-		phonenumbers[i] = (char *)malloc(sizeof(char)*strlen(phonenumbers[i-1]) + 1);
-		strcpy(names[i], names[i - 1]);
-		strcpy(phonenumbers[i], phonenumbers[i - 1]);
+	if(i!=0)
+	while (i != 0 && strcmp(name, users[i - 1].name) < 0) {
+		users[i] = users[i - 1];
 		i--;
 		if (i == 0)
 			break;
 	}
-		
-	names[i] = (char *)malloc(sizeof(char)*(strlen(name) + 1));
-	phonenumbers[i] = (char *)malloc(sizeof(char)*(strlen(phonenumber) + 1));
-	strcpy(names[i], name);
-	strcpy(phonenumbers[i], phonenumber);
-
+	users[i].name = strdup(name);
+	users[i].phonenumber = strdup(phonenumber);
+	users[i].email = strdup(email);
+	users[i].group = strdup(group);
+	
 	num++;
-	printf("%s was added successfully. %s\n", name, phonenumber);
+	printf("%s was added successfully.\n", name);
 	return;
 }
 
 int search(char *name) {
 	for (int i = 0; i < num; i++) {
-		if (strcmp(names[i], name) == 0) {
+		if (strcmp(users[i].name, name) == 0) {
 			return i; //return index
 		}
 	}
@@ -182,18 +207,18 @@ int search(char *name) {
 }
 
 void find(char *name) {
-	for (int i = 0; i < num; i++) {
-		if (strcmp(names[i], name) == 0) {
-			printf("%s %s\n",phonenumbers[i], names[i]);
-			return;
-		}
+	int i = search(name);
+	if (i != -1) {
+		printf("%s:\n\tPhone: %s\n\tEmail: %s\n\tGroup: %s\n", users[i].name, users[i].phonenumber, users[i].email, users[i].group);
 	}
-	printf("No person named '%s' existst\n", name);
+	else {
+		printf("No person named '%s' exist\n", name);
+	}
 }
 
 void status() {
 	for (int i = 0; i < num; i++) {
-		printf("%s %s \n", names[i], phonenumbers[i]);
+		printf("%s %s \n", users[i].name, users[i].phonenumber);
 	}
 	printf("Total %d persions.\n", num);
 }
@@ -206,41 +231,34 @@ void del(char *name) {
 	}
 	else { //found
 		for (int i = index; i < num - 1; i++) {
-			free(names[i]);
-			free(phonenumbers[i]);
-			names[i] = (char *)malloc(sizeof(char)*strlen(names[i+1]) + 1);
-			phonenumbers[i] = (char *)malloc(sizeof(char)*strlen(phonenumbers[i + 1]) + 1);
-			strcpy(names[i], names[i + 1]);
-			strcpy(phonenumbers[i], phonenumbers[i + 1]);
+			users[i] = users[i + 1];
 		}
 		num--;
-		free(names[num]);
-		free(phonenumbers[num]);
 		printf("'%s' was deleted successfully.\n", name);
 	}
 }
 
 int exit() {
-	for (int i = 0; i < num; i++) {
-		free(names[i]);
-		free(phonenumbers[i]);
-	}
-	num = 0;
+	free(users);
 	return 0;
 }
 
 void load(char *filename) {
 	char buf1[BUFFER_SIZE];
-	char buf2[BUFFER_SIZE];
-
+	char *name, *number, *email, *group;
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
 		printf("Open failed. \n");
 		return;
 	}
-	while ((fscanf(fp, "%s", buf1) != EOF)) {
-		fscanf(fp, "%s", buf2);
-		add(buf1, buf2);
+	while (1) {
+		if (!read_line(fp, buf1, BUFFER_SIZE - 1))
+			break;
+		name = strtok(buf1, "#");
+		number = strtok(NULL, "#");
+		email = strtok(NULL, "#");
+		group = strtok(NULL, "#");
+		add(name, number, email, group);
 	}
 	fclose(fp);
 }
@@ -255,8 +273,8 @@ void save(char *filename) {
 	}
 
 	for (i = 0; i < num; i++) {
-		fprintf(fp, "%s %s\n", names[i], phonenumbers[i]);
+		fprintf(fp, "%s#%s#%s#%s#\n", users[i].name, users[i].phonenumber, users[i].email, users[i].group);
 	}
-
+	printf("save contents to %s sucessfully!\n", filename);
 	fclose(fp);
 }
