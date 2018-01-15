@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define CAPACITY 100
+#define DIRECTORY_CAPACITY 3
+#define COMMAND_CAPACITY 3
 #define BUFFER_SIZE 100
-#define COMMAND_NUM 3
 
 //global variable
-char *names[CAPACITY];
-char *phonenumbers[CAPACITY];
-int num = 0;
+char **names;
+char **phonenumbers;
 
-int readline();
+int capacity = DIRECTORY_CAPACITY; //size of arrays.
+int num = 0; //number of people in phone directory.
+
+void reallocate();
+void read_line(char str[], int limit);
 int search(char *name);
+void init_directory();
+int process_command();
 void add(char *name, char *phonenumber);
 void find(char *name);
 void status();
@@ -22,64 +27,129 @@ int exit();
 
 int main() {
 	int stop = 1;
+
+	init_directory();
+
 	while (stop) {
 		printf("$ ");
-		stop=readline();
+		stop=process_command();
 	}
 }
 
-int readline() {
-	char ch;
-	char command[COMMAND_NUM][CAPACITY];
-
-	int row = 0;
-	int col = 0;
-	
+void read_line(char str[], int limit) {
+	int ch, i = 0;
 	while ((ch = getchar()) == ' ');
 	while (ch != '\n') {
-		if (ch == ' ') {
-			command[row][col] = '\0';
-			row++;
-			col = 0;
-		}
-		else {
-			command[row][col++] = ch;
-		}
+		if (i < limit - 1)
+			str[i++] = ch;
 		ch = getchar();
 	}
-	command[row][col] = '\0';
+	str[i] = '\0';
+}
+
+int process_command() {
+	char str[BUFFER_SIZE];
+	char command[COMMAND_CAPACITY][BUFFER_SIZE] = { 0 };
+	
+	int num_command = 0;
+	read_line(str, BUFFER_SIZE);
+	char *ptr = strtok(str, " ");
+	while (ptr != NULL) {
+		if (num_command < COMMAND_CAPACITY) {
+			strcpy(command[num_command++], ptr);
+			ptr = strtok(NULL, " ");
+		}
+		else {
+			printf("There are too many arguments\n");
+			return -1;
+		}
+	}
+
 
 	if (strcmp(command[0], "add")==0) {
-		add(command[1], command[2]);
+		if (command[1][0]=='\0') {
+			printf("Name is required.\n");
+		}else if (command[2][0]=='\0') {
+			printf("Phonenumber is required.\n");
+		}
+		else {
+			add(command[1], command[2]);
+		}
 	}
 	else if (strcmp(command[0], "load")==0) {
-		load(command[1]);
+		if (command[1][0]=='\0') {
+			printf("File name is required.\n");
+		}
+		else {
+			load(command[1]);
+		}
 	}
 	else if (strcmp(command[0], "find")==0) {
-		find(command[1]);
+		if (command[1][0] == '\0') {
+			printf("Name is required.\n");
+		}
+		else {
+			find(command[1]);
+		}
 	}
 	else if (strcmp(command[0], "status")==0) {
 		status();
 	}
 	else if (strcmp(command[0], "delete")==0) {
-		del(command[1]);
+		if (command[1][0] == '\0') {
+			printf("Name is required.\n");
+		}
+		else {
+			del(command[1]);
+		}
 	}
 	else if (strcmp(command[0], "save")==0) {
-		save(command[1]);
+		if (command[1][0] == '\0') {
+			printf("File name is required.\n");
+		}
+		else {
+			save(command[1]);
+		}
 	}
 	else if (strcmp(command[0], "exit")==0) {
 		return exit();
-
 	}
 	else {
-		printf("Please input correct command\n");
+		printf("Please input correct command.\n");
 	}
 	return 1;
+}
+
+void reallocate() {
+	capacity *= 2;
+
+	char **tempname = (char **)malloc(sizeof(char*)*capacity);
+	char **tempphone = (char **)malloc(sizeof(char*)*capacity);
+	
+	for (int i = 0; i < num; i++) {
+		tempname[i] = names[i];
+		tempphone[i] = phonenumbers[i];
+	}
+
+	free(names);
+	free(phonenumbers);
+
+	names = tempname;
+	phonenumbers = tempphone;
+}
+
+void init_directory() {
+	names = (char**)malloc(sizeof(char*)*DIRECTORY_CAPACITY);
+	phonenumbers= (char**)malloc(sizeof(char*)*DIRECTORY_CAPACITY);
 }
 
 void add(char *name, char *phonenumber) {
 	int i = num;
 	
+	if (num >= capacity) {
+		reallocate();
+	}
+
 	while (i != 0 && strcmp(name, names[i - 1]) < 0) {
 		free(names[i]);
 		free(phonenumbers[i]);
