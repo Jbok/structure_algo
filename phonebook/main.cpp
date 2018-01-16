@@ -13,17 +13,17 @@ typedef struct user {
 };
 
 //global variable
-user *users;
-
-
+user **users; //structure array pointer
 int num = 0; //number of people in phone directory.
 int capacity = DIRECTORY_CAPACITY; //size of arrays.
 
+void releas_user(user *user);
 void compose_name(char *str);
 void reallocate();
 int read_line(FILE *fp, char str[], int limit);
 int search(char *name);
 void init_directory();
+//void init_directory();
 int process_command();
 void add(char *name, char *phonenumber, char*email, char *group);
 void find(char *name);
@@ -33,6 +33,7 @@ void load(char *filename);
 void save(char *filename);
 int exit();
 
+
 int main() {
 	int stop = 1;
 	init_directory();
@@ -41,6 +42,17 @@ int main() {
 		printf("$ ");
 		stop=process_command();
 	}
+}
+
+void releas_user(user *user) {
+	free(user->name);
+	if (user->email != NULL)
+		free(user->email);
+	if (user->phonenumber != NULL)
+		free(user->phonenumber);
+	if (user->group != NULL)
+		free(user->group);
+	free(user);
 }
 
 void compose_name(char *str) {
@@ -161,7 +173,8 @@ int process_command() {
 
 void reallocate() {
 	capacity *= 2;
-	user *tempuser = (user*)malloc(sizeof(user)*capacity);
+	
+	user **tempuser = (user**)malloc(sizeof(user*)*capacity);
 	for (int i = 0; i < num; i++) {
 		tempuser[i] = users[i];
 	}
@@ -170,7 +183,7 @@ void reallocate() {
 }
 
 void init_directory() {
-	users = (user*)malloc(sizeof(user)*DIRECTORY_CAPACITY);
+	users= (user**)malloc(sizeof(user*)*capacity);
 }
 
 void add(char *name, char *phonenumber, char*email, char *group) {
@@ -181,16 +194,18 @@ void add(char *name, char *phonenumber, char*email, char *group) {
 		reallocate();
 	}
 	if(i!=0)
-	while (i != 0 && strcmp(name, users[i - 1].name) < 0) {
+	while (i != 0 && strcmp(name, users[i-1]->name) < 0) {
 		users[i] = users[i - 1];
 		i--;
 		if (i == 0)
 			break;
 	}
-	users[i].name = strdup(name);
-	users[i].phonenumber = strdup(phonenumber);
-	users[i].email = strdup(email);
-	users[i].group = strdup(group);
+	users[i] = (user*)malloc(sizeof(user));
+
+	users[i]->name = strdup(name);  //strdup assign address using malloc so, need to free at last.
+	users[i]->phonenumber = strdup(phonenumber);
+	users[i]->email = strdup(email);
+	users[i]->group = strdup(group);
 	
 	num++;
 	printf("%s was added successfully.\n", name);
@@ -199,7 +214,7 @@ void add(char *name, char *phonenumber, char*email, char *group) {
 
 int search(char *name) {
 	for (int i = 0; i < num; i++) {
-		if (strcmp(users[i].name, name) == 0) {
+		if (strcmp(users[i]->name, name) == 0) {
 			return i; //return index
 		}
 	}
@@ -209,7 +224,7 @@ int search(char *name) {
 void find(char *name) {
 	int i = search(name);
 	if (i != -1) {
-		printf("%s:\n\tPhone: %s\n\tEmail: %s\n\tGroup: %s\n", users[i].name, users[i].phonenumber, users[i].email, users[i].group);
+		printf("%s:\n\tPhone: %s\n\tEmail: %s\n\tGroup: %s\n", users[i]->name, users[i]->phonenumber, users[i]->email, users[i]->group);
 	}
 	else {
 		printf("No person named '%s' exist\n", name);
@@ -218,11 +233,10 @@ void find(char *name) {
 
 void status() {
 	for (int i = 0; i < num; i++) {
-		printf("%s %s \n", users[i].name, users[i].phonenumber);
+		printf("%s %s \n", users[i]->name, users[i]->phonenumber);
 	}
 	printf("Total %d persions.\n", num);
 }
-
 void del(char *name) {
 	int index = search(name);
 	if (index == -1) { //not found
@@ -230,6 +244,7 @@ void del(char *name) {
 		return;
 	}
 	else { //found
+		releas_user(users[index]);
 		for (int i = index; i < num - 1; i++) {
 			users[i] = users[i + 1];
 		}
@@ -239,6 +254,9 @@ void del(char *name) {
 }
 
 int exit() {
+	for (int i = 0; i < num; i++) {
+		releas_user(users[i]);
+	}
 	free(users);
 	return 0;
 }
@@ -273,7 +291,7 @@ void save(char *filename) {
 	}
 
 	for (i = 0; i < num; i++) {
-		fprintf(fp, "%s#%s#%s#%s#\n", users[i].name, users[i].phonenumber, users[i].email, users[i].group);
+		fprintf(fp, "%s#%s#%s#%s#\n", users[i]->name, users[i]->phonenumber, users[i]->email, users[i]->group);
 	}
 	printf("save contents to %s sucessfully!\n", filename);
 	fclose(fp);
