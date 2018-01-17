@@ -27,11 +27,13 @@ Polynomial *create_by_add_two_polynomials(char x, char former, char later) {
 		Term *temp = ptr_former->first;
 		while (temp != NULL) {
 			add_term(temp->coef, temp->expo, result);
+			temp = temp->next;
 		}
 
 		temp = ptr_later->first;
 		while (temp != NULL) {
 			add_term(temp->coef, temp->expo, result);
+			temp = temp->next;
 		}
 
 		return result;
@@ -175,6 +177,7 @@ void print_poly(Polynomial *p) {
 			printf("+");
 		}
 	}
+	printf("\n");
 }
 
 void print_term(Term *pTerm) {
@@ -182,7 +185,7 @@ void print_term(Term *pTerm) {
 		printf("%d", pTerm->coef);
 	}
 	else {
-		printf("%d^%d", pTerm->coef, pTerm->expo);
+		printf("%dx^%d", pTerm->coef, pTerm->expo);
 	}
 	
 }
@@ -191,7 +194,7 @@ int read_line(FILE *fp, char *str, int max_length) {
 	char ch;
 	int length = 0;
 	while ((ch = fgetc(fp)) == ' ');
-	while (ch != NULL) {
+	while (ch != '\n') {
 		if (length + 1 >= max_length) {
 			break;
 		}
@@ -231,34 +234,34 @@ void handle_calc(char x, char *arg2) {
 	}
 	else {
 		int value = atoi(arg2);
-		eval(temp, value);
+		printf("result: %d\n", eval(temp, value));
 	}
 }
 
-void erase_blanks(char *expression) {
-	char *temp = (char*)malloc(sizeof(char)*strlen(expression));
+void erase_blanks(char **expression) {
+	char *temp = (char*)malloc(sizeof(char)*strlen(*expression));
 	int length = 0;
-	for (int i = 0; i < strlen(expression); i++) {
-		if (expression[i] != ' ') {
-			temp[length++] = expression[i];
+	for (int i = 0; i < strlen(*expression); i++) {
+		if ((*expression)[i] != ' ') {
+			temp[length++] = (*expression)[i];
 		}
 	}
 	temp[length] = '\0';
-	expression = temp;
+	*expression = temp;
 }
 
 void handle_definition(char *str) {
 	
-	erase_blanks(str);
+	erase_blanks(&str);
 	char *f_name = strtok(str, "=");
 	if (f_name == NULL || strlen(f_name) != 1) {
-		printf("Unsupported command.");
+		printf("Unsupported command.\n");
 		return;
 	}
 
 	char *exp_body = strtok(NULL, "=");
 	if (exp_body == NULL || strlen(exp_body) <= 0) {
-		printf("Invalid expression format.--");
+		printf("Invalid expression format.\n");
 		return;
 	}
 
@@ -299,6 +302,8 @@ void polynomial_process_command() {
 		if (read_line(stdin, commnad_line, BUFFER_LENGTH) <= 0) {
 			continue;
 		}
+		char temp[BUFFER_LENGTH];
+		strcpy(temp, commnad_line);
 		command = strtok(commnad_line, " ");
 		if (strcmp(command, "print") == 0) {
 			arg1 = strtok(NULL, " ");
@@ -324,7 +329,7 @@ void polynomial_process_command() {
 		else if (strcmp(command, "exit") == 0)
 			break;
 		else {
-			handle_definition(command);
+			handle_definition(temp);
 		}
 	}
 }

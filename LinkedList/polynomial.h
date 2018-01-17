@@ -38,7 +38,7 @@ int read_line(FILE *fp, char *str, int max_length);
 Polynomial *find_poly(char x);
 void handle_print(char x);
 void handle_calc(char x, char *arg2);
-void erase_blanks(char *expression);
+void erase_blanks(char **expression);
 void handle_definition(char *str);
 void polynomial_process_command();
 void insert_polynomial(Polynomial *ptr_poly);
