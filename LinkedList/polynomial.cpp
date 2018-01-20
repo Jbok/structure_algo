@@ -190,22 +190,6 @@ void print_term(Term *pTerm) {
 	
 }
 
-int read_line(FILE *fp, char *str, int max_length) {
-	char ch;
-	int length = 0;
-	while ((ch = fgetc(fp)) == ' ');
-	while (ch != '\n') {
-		if (length + 1 >= max_length) {
-			break;
-		}
-		str[length++] = ch;
-		ch = fgetc(fp);
-	}
-	str[length] = '\0';
-
-	return length;
-}
-
 Polynomial *find_poly(char x) {
 	for (int i = 0; i < num; i++) {
 		if ((polys[i]->name) == x) {

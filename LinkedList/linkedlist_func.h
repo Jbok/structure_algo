@@ -22,5 +22,6 @@ Node *get_node(int index, Node *head);
 int add(int index, char *item, Node *head);
 Node *remove(int index, Node *head);
 Node *remove(char *item, Node *head);
+int read_line(FILE *fp, char *str, int max_length);
 
 #endif

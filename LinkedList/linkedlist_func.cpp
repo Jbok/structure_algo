@@ -136,3 +136,19 @@ void add_to_ordered_list(char *item, Node *head) {
 		add_after(item, q);
 	}
 }
+
+int read_line(FILE *fp, char *str, int max_length) {
+	char ch;
+	int length = 0;
+	while ((ch = fgetc(fp)) == ' ');
+	while (ch != '\n') {
+		if (length + 1 >= max_length) {
+			break;
+		}
+		str[length++] = ch;
+		ch = fgetc(fp);
+	}
+	str[length] = '\0';
+
+	return length;
+}

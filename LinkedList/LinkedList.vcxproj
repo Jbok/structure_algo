@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -139,13 +139,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="linkedlist_func.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="musiclibrary.cpp" />
     <ClCompile Include="polynomial.cpp" />
+    <ClCompile Include="string_tools.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="linkedlist_func.h" />
+    <ClInclude Include="musiclibrary.h" />
     <ClInclude Include="polynomial.h" />
+    <ClInclude Include="string_tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="library.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
