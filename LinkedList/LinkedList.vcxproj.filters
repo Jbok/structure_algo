@@ -43,5 +43,8 @@
     <Text Include="library.txt">
       <Filter>소스 파일</Filter>
     </Text>
+    <Text Include="ShellExecute오류.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
   </ItemGroup>
 </Project>

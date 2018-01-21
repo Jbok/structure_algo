@@ -12,3 +12,9 @@ int read_line(FILE *fp, char *str, int size) {
 	str[i] = '\0';
 	return i;
 }
+
+LPWSTR char_to_LPWSTR(char *str) {
+	size_t size = 1 + strlen(str);
+	LPWSTR w = new WCHAR[size];
+	return w;
+}
