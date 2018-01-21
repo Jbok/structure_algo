@@ -51,4 +51,5 @@ void save_song(FILE *fp, Song *ptr_song);
 void remove(int index);
 void remove_snode(Artist *ptr_artist, SNode *ptr_snode);
 void remove_song(Song *song);
+void remove_artist(Artist *ptr_artist);
 #endif

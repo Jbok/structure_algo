@@ -346,6 +346,31 @@ void remove(int index) {
 	}
 	remove_snode(ptr_artist, ptr_snode);
 	remove_song(ptr_song);
+
+	if (ptr_artist->head == NULL) {
+		remove_artist(ptr_artist);
+	}
+}
+
+void remove_artist(Artist *ptr_artist) {
+	char *name = ptr_artist->name;
+	Artist *p = artist_directory[(unsigned char)name[0]];
+	Artist *q = NULL;
+	while (p != NULL && strcmp(p->name, ptr_artist->name) <0) {
+		q = p;
+		p->next = q;
+	}
+	if (p == NULL) { //either empty list or not exist
+		printf("No such Artist:%s --- ERROR. something is wrong\n", ptr_artist->name);
+		return;
+	}
+	else if (q == NULL) { //remove first
+		artist_directory[(unsigned char)name[0]] = p->next;
+	}
+	else {//remove after q
+		q->next = p->next;
+	}
+	free(ptr_artist);
 }
 
 void remove_snode(Artist *ptr_artist, SNode *ptr_snode) {
