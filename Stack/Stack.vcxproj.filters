@@ -18,23 +18,35 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="stackADT.cpp">
+    <ClCompile Include="maze.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="postfix.cpp">
+    <ClCompile Include="pos.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stackADT_maze.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stackADT.h">
+    <ClInclude Include="pos.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="postfix.h">
+    <ClInclude Include="stackADT_maze.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="maze.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="PostfixADT.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
+    <Text Include="MazeADT.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
+    <Text Include="maze_map.txt">
       <Filter>소스 파일</Filter>
     </Text>
   </ItemGroup>

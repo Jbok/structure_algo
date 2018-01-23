@@ -140,14 +140,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="postfix.cpp" />
-    <ClCompile Include="stackADT.cpp" />
+    <ClCompile Include="maze.cpp" />
+    <ClCompile Include="pos.cpp" />
+    <ClCompile Include="stackADT_maze.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="postfix.h" />
-    <ClInclude Include="stackADT.h" />
+    <ClInclude Include="maze.h" />
+    <ClInclude Include="pos.h" />
+    <ClInclude Include="stackADT_maze.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="MazeADT.txt" />
+    <Text Include="maze_map.txt" />
     <Text Include="PostfixADT.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

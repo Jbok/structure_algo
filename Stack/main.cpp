@@ -1,4 +1,5 @@
-#include "postfix.h"
+//#include "postfix.h"
+#include "maze.h"
 #include <stdio.h>
 #include <string.h>
 #define MAX_LENGTH 100
@@ -6,6 +7,8 @@
 void read_line(FILE *fp, char *str, int length);
 
 int main() {
+	play_maze();
+	/* postfix calcluator
 	char infix[MAX_LENGTH];
 	printf("$ ");
 	read_line(stdin, infix, MAX_LENGTH);
@@ -14,6 +17,9 @@ int main() {
 	char *postfix = convert(infix);
 	printf(" %s ", postfix);
 	printf(" =value: %d \n", eval(postfix));
+
+	*/
+	
 }
 
 void read_line(FILE *fp, char *str, int length) {
