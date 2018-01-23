@@ -2,8 +2,6 @@
 #ifndef __STACKADT_H__
 #define __STACKADT_H__
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h> // C99 only
 
 typedef int Item; //for reuse of codes

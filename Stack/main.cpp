@@ -11,7 +11,7 @@ int is_balanced(char *expr);
 
 int main() {
 	printf("$ ");
-	scanf();
+	scanf(str);
 
 }
 
