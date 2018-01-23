@@ -1,7 +1,7 @@
 #include "postfix.h"
 
-static char OPERATORS[] = "+-*/";
-static int PRECEDENCE[] = { 1,1,2,2 };
+static char OPERATORS[] = "+-*/()";
+static int PRECEDENCE[] = { 1,1,2,2,-1,-1 };
 
 Stack operand_stack;
 Stack operator_stack;
@@ -13,7 +13,7 @@ static void handle_exception(const char*(message)) {
 
 int is_operator(char ch) {
 	for (int i = 0; i < strlen(OPERATORS); i++) {
-		if (ch = OPERATORS[i])
+		if (ch == OPERATORS[i])
 			return i;
 	}
 	return -1;
@@ -80,21 +80,26 @@ int precedence(char op) {
 }
 
 char *process_op(char op, char *pos) {
-	if (is_empty(operator_stack))
+	if (is_empty(operator_stack) || op=='(')
 		push(operator_stack, op);
 	else {
 		char top_op = peek(operator_stack);
-		if (precedence(op) > precedence(top_op))
-			push(operand_stack, op);
+
+		if (precedence(op) >= precedence(top_op)) {
+			push(operator_stack, op);
+		}
 		else {
 			while (!is_empty(operator_stack) && (precedence(op) <= precedence(top_op))) {
 				pop(operator_stack);
+				if (top_op == '(')
+					break;
 				sprintf(pos, "%c ", top_op);
-				pos += (strlen(pos) + 1);
+				pos += 2;
 				if (!is_empty(operator_stack))
 					top_op = (char)peek(operator_stack);
 			}
-			push(operator_stack, op);
+			if(op!=')')
+				push(operator_stack, op);
 		}
 	}
 	return pos;
@@ -123,6 +128,8 @@ char *convert(char *infix) {
 
 	while (!is_empty(operator_stack)) {
 		char op = (char)pop(operator_stack);
+		if (op == '(')
+			handle_exception("Unmatched parenthesis.\n");
 		sprintf(pos, "%c ", op);
 		pos += 2;
 	}

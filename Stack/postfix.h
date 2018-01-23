@@ -7,4 +7,8 @@
 
 int is_operator(char ch);
 int eval(char *expr);
+int eval_op(Stack stack, char ch);
+int precedence(char op);
+char *process_op(char op, char *pos);
+char *convert(char *infix);
 #endif

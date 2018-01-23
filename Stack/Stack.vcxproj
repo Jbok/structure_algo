@@ -141,12 +141,10 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="postfix.cpp" />
-    <ClCompile Include="stack.cpp" />
     <ClCompile Include="stackADT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="postfix.h" />
-    <ClInclude Include="stack.h" />
     <ClInclude Include="stackADT.h" />
   </ItemGroup>
   <ItemGroup>
