@@ -139,10 +139,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="maze.cpp" />
     <ClCompile Include="queueADT.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="maze.h" />
     <ClInclude Include="queueADT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="BFS_Maze_ADT.txt" />
+    <Text Include="DFS_BFS차이점.txt" />
+    <Text Include="maze_map.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

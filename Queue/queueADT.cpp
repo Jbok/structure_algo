@@ -1,17 +1,6 @@
 #include "queueADT.h"
 #define INIT_CAPACITY 100
 
-struct queue_type {
-	Item *contents;
-	int front;
-	int rear;
-	int size;
-	int capacity;
-};
-
-typedef struct queue_type *Queue;
-typedef int Item;
-
 void terminate(const char *message) {
 	printf("%s\n", message);
 	exit(1);
