@@ -1,10 +1,103 @@
 #include "queueADT.h"
+#define INIT_CAPACITY 100
 
-////////////////////////////////////////////
+struct queue_type {
+	Item *contents;
+	int front;
+	int rear;
+	int size;
+	int capacity;
+};
+
+typedef struct queue_type *Queue;
+typedef int Item;
+
+void terminate(const char *message) {
+	printf("%s\n", message);
+	exit(1);
+}
+
+int get_size(Queue q) {
+	return q->size;
+}
+
+Queue create() {
+	Queue q = (Queue)malloc(sizeof(queue_type));
+	if (q == NULL)
+		terminate("Error in create: queue could not be created.");
+	q->contents = (Item *)malloc(INIT_CAPACITY*sizeof(Item));
+	if (q->contents == NULL)
+		terminate("Error in create: queue contents could not be created.");
+	q->front = 0;
+	q->rear = -1;
+	q->size = 0;
+	q->capacity = INIT_CAPACITY;
+	return q;
+}
+
+void destroy(Queue q) {
+	free(q->contents);
+	free(q);
+}
+
+void make_empty(Queue q) {
+	q->front = 0;
+	q->rear = -1;
+	q->size = 0;
+}
+
+bool is_empty(Queue q) {
+	return q->size == 0;
+}
+
+bool is_full(Queue q) {
+	return q->size == q->capacity;
+}
+
+void enqueue(Queue q, Item i) {
+	if (is_full(q))
+		reallocate(q);
+	q->rear = (q->rear + 1) % q->capacity;
+	(q->contents)[q->rear] = i;
+	q->size++;
+}
+
+Item dequeue(Queue q) {
+	if (is_empty(q))
+		terminate("Error in dequeue: queue is empty.");
+	Item result = (q->contents)[q->front];
+	q->front = (q->front + 1) % q->capacity;
+	q->size--;
+	return result;
+}
+
+Item peek(Queue q){
+	if (is_empty(q))
+		terminate("Error in dequeue: queue is empty.");
+	Item result = (q->contents)[q->front];
+	return result;
+}
+
+void reallocate(Queue q) {
+	Item *temp = (Item *)malloc(sizeof(Item) * 2 * q->capacity);
+	if (temp == NULL)
+		terminate("Erro in create: queue could not be expanded.");
+	int j = q->front;
+	for (int i = 0; i < q->size; i++) {
+		temp[i] = (q->contents)[j];
+		j = (j + 1)*(q->capacity);
+	}
+	free(q->contents);
+
+	q->front = 0;
+	q->rear = q->size - 1;
+	q->contents = temp;
+	q->capacity *= 2;
+}
+
 ///                                      ///
 ///   queue implemented by linked list   ///
 ///                                      /// 
-////////////////////////////////////////////
 /*
 struct queue_type {
 Node front;
