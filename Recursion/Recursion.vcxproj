@@ -142,10 +142,12 @@
     <ClCompile Include="blob.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="maze.cpp" />
+    <ClCompile Include="n_queens.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blob.h" />
     <ClInclude Include="maze.h" />
+    <ClInclude Include="n_queens.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

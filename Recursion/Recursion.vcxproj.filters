@@ -24,12 +24,18 @@
     <ClCompile Include="blob.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="n_queens.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="maze.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="blob.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="n_queens.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
