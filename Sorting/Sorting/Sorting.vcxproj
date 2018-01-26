@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{51E11AB1-FF23-4553-B45D-48B831F21AD5}</ProjectGuid>
+    <ProjectGuid>{9CD37208-DCD2-493B-84A3-9513674C7485}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Sorting</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
@@ -139,6 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mergesort.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mergesort.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
