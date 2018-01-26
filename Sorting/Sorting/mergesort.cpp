@@ -3,7 +3,7 @@ void merge(int arr[], int front, int middle, int rear) {
 	int *temp = (int*)malloc(sizeof(int)*(rear - front + 1));
 	int i = front;
 	int j = middle + 1;
-	int k = front;
+	int k = 0;
 	while (i<=middle && j<=rear) {
 		if (arr[i] <= arr[j]) {
 			temp[k++] = arr[i++];
@@ -19,7 +19,7 @@ void merge(int arr[], int front, int middle, int rear) {
 		temp[k++] = arr[j++];
 	}
 	for (int i = front; i <= rear; i++) {
-		arr[i] = temp[i];
+		arr[i] = temp[i-front];
 	}
 	free(temp);
 }
