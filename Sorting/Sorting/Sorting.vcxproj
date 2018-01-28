@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bst.cpp" />
     <ClCompile Include="heapsort.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mergesort.cpp" />
     <ClCompile Include="quicksort.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bst.h" />
     <ClInclude Include="heapsort.h" />
     <ClInclude Include="mergesort.h" />
     <ClInclude Include="quicksort.h" />
