@@ -1,0 +1,10 @@
+ShellExecute는 인자 값으로 LPCWSTR을 사용
+
+LP: long pointer의 약어
+C: constant, 함수 내부에서 인자값 변경 금지
+STR: string, 내부적으로 char형 배열에 null값 종료를 의미
+W: wide char, UNICODE를 의미
+
+LPCWSTR = Long Pointer Constant Wide String = const w_char *
+
+대신 ShellExecuteA는 인자 값으로 LPCSTR을 사용 UNICODE로 바꾸어 주지 않아도 됨.
