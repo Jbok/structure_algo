@@ -1,0 +1,97 @@
+#압축 알고리즘
+압축의 방식은 2가지 무손실(lossless), 손실(lossy)방식이 있다.
+무손실 압축 알고리즘: 압축을 할때 손실이 일어나면 안되는 경우 ex. text데이터, 수치데이터의 경우 사용
+손실 압축 알고리즘: 압축율의 측면에서 더 좋다. ex. 영상, 사진에서 사용.
+Huffman Coding Algorithm은 무손실 압축 알고리즘이다.
+
+=========================================
+#Huffman Coding
+: 6개의 문자 a, b, c, d, e, f로 이루어진 파일이 있다고 하자. 
+문자의 총 개수는 100,000개이고 각 문자의 등장 횟수는 다음과 같다.
+		a	b	c	d	e	f
+Frequency	45	13	12	16	9	5
+Fixed-length	000	110	010	001	100	101
+Variable-length	0	101	100	111	1101	1100
+
+:고정 길이 코드를 사용하면 각각의 문자를 표현하기 위해서 3비트가 필요하며, 따라서 파일의 길이는 300,000비트가 된다.
+위 테이블의 가변길이 코드를 사용하면 224,000비트가 된다. (Fixed-length): 압축 효과가 상승한다.
+
+*왜 a:0, b:1, c:00, d:01 ... 이렇게 사용하지 않을까?
+: 디코딩 할때 값을 해석하는것이 불가능 하기 때문이다. ex) 0001 : aaab? or cd?
+위의 Variable-length는 디코딩이 가능하도록 규칙(Prefix Code)에 의해서 저장된 값이다. 
+
+#Prefix Code
+: 어떤 codeword도 다른 codeword의 prefix가 되지 않는 코드 (codeword란, 하나의 문자에 부여된 이진코드)
+-> 모호함이 없이 decode가 가능함. prefix code는 하나의 이진트리로 표현 가능함.
+
+*prefix 가 되지 않는 코드? 
+: a의 0은 다른 코드의 접두사가 되지 않는다. 어떤 코드도 0으로 시작되지 않음. 모든 코드에 적용됨.
+prefix code는 하나의 이진트리로 표현 가능함. (fixed-length code 역시 prefix코드다)
+이진트리에서 모든 문자들은 트리의 leaf노드가 되어야 Prefix Code이다.
+
+#Huffman Coding
+: 주어진 데이터 파일에 대해서 해당 문자의 Frequency와 Variable-length가 주어질 때,
+해당 데이터 파일을 encoding 하는 데 압축된 길이의 용량이 최소가 되도록하는 코딩 알고리즘.
+
+방법
+1. 각 문자들의 상대적인 빈도(확률)을 구한다.
+2. 가장 작은 빈도 값 2개를 찾고 그 두개의 합을 값으로 갖는 부모 노드를 만든다.
+3. 반복해서 값이 1이 되는 하나의 부모노드가 나올 때 까지 반복한다.
+4. 만든 트리에서 왼쪽으로 내려가면 0 오른쪽으로 내려가면 1이라는 코드를 받게된다.
+*이렇게 만들어진 코드는 어떤 순서에 따라서 각 문자의 비트수가 달라질 수 있다.
+하지만 결국에 만들어지는 총 비트 수는 모두 같다.
+
+=====================================================
+#Run-Length Encoding 
+: 무손실 압축 기법중 하나.
+: 런(run)은 동일한 분자가 하나 혹은 그 이상 연속해서 나오는 것을 의미한다.
+예를 들어 스트링 s = "aaabba"는 다음과 같은 3개의 run으로 구성된다: "aaa", "bb", "a"
+run-length encoding에서는 각각의 run을 그 "run을 구성하는 문자"어ㅣ "run의 길이"의 순서쌍 (n, ch)로 encoding한다.
+여기서 ch가 문자이고 n은 길이이다. 가령 위의 문자열s는 다음과 같이 코딩된다. 3a2b1a.
+Run-length encoding은 길이가 긴 run들이 많은 경우에 효과적이다.
+ex. abababababab = a1b1a1b1a1b1a1b1,  aaaaaaaaaaaabbbbbbbbbb = 12a11b
+픽셀들의 집합으로 이루어진 이미지 파일의 경우에는 동일한 색깔이 연속적으로 나오는 경우가 많기 때문에
+run-length encoding에 효율이 좋다.
+
+
+======================================================
+Huffman Method with Run-Length Encoding
+1. 파일을 구성하는 각각의 run들을 하나의 super-symbol로 본다. 이 super-symbol들에 대해서 Huffman coding을 적용한다.
+ex) AAABAACCAABA는 5개의 super-symbol들 AAA, B, AA, CC, and A로 구성되며, 각 super-symbol의 등장횟수는 다음과 같다.
+symbol		A	C	A	B	A
+run length	3	2	1	1	2
+frequency	1	1	1	2	2
+해당 super-symbol에 대해서 Huffman Method를 적용하면 된다.
+
+2. Run과 frequency 찾기 (Java 기준)
+  1) 압축할 파일을 처음부터 끝까지 읽어서 파일을 구성하는 run들과 각 run들의 등장횟수를 구한다.
+  2) 먼저 각 run들을 표현할 하나의 클래스(class run)을 정의한다.
+      class run은 적어도 세 개의 데이터 멤버 symvbol, runLen, freq를 가져야한다.여기서 symbol은 byte타입이고, 나머지는 정수들이다.    3) 인식한 run들은 하나의 ArrayList에 저장한다. 
+  4) 적절한 생성자와 equlas 매서드(symbol과 runlength가 동일한가)를 구현한다.
+  5) 데이터 파일을 적어도 두 번 읽어야 한다. 한번은 run들을 찾기 위해서, 그리고 다음은 실제로 압축을 수행하기 위해서.
+
+*Run 인식하기
+1. 파일의 첫 byte를 읽고 이것을 start_symbol이라고 한다.
+2. 파일의 끝에 도달하거나 혹은 start_symbol과 다른 byte가 나올 때까지 연속해서 읽는다. 현재까지 읽은 byte수를 count한다.
+3. (start_symbol, count -1)인 run이 하나 인식되었다. 이 run을 저장하고 가장 마지막에 읽은 byte를 start_symbol로
+count=1로 reset하고 다시 반복한다.
+
+*Huffman Table을 구현한 이후 작업
+: Huffman coding 알고리즘은 트리들의 집합을 유지하면서 
+매 단계에서 가장 frequency가 작은 두 트리를 찾아서 두 트리를 하나로 합친다.
+==>이런 연산에 가장 접합한 자료구조는 최소 힙(minimum heap), (우선 순위 큐)이다.
+즉, 힙에 저장된 각각의 원소들은 하나의 트리이다. (노드가 아니다)
+//1. store all runs into the heap.
+//2. while the heap size >1 do
+//	(1) perfor extractMin two times
+//	(2) make a combined tree
+//	(3) insert the combined tree into the heap.
+//3. Let the Root be the root of the tree
+
+
+*Minimum Heap
+: complete binary tree + heap property (부모는 자식 노드보다 작다.)
+
+
+
+
