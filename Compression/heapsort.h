@@ -10,6 +10,9 @@ struct run {
 	int freq = 0;
 	struct run *left=NULL;
 	struct run *right=NULL;
+	int codeword;		 //부여된 codeword를 32비트 정수로 저장.
+	int codewordLen;	 //부여된 codeword의 길이. 즉, codeword의 하위 codewordlen비트가 실제 codeword
+
 };
 
 typedef struct run *Run;

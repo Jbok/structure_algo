@@ -81,6 +81,8 @@ count=1로 reset하고 다시 반복한다.
 매 단계에서 가장 frequency가 작은 두 트리를 찾아서 두 트리를 하나로 합친다.
 ==>이런 연산에 가장 접합한 자료구조는 최소 힙(minimum heap), (우선 순위 큐)이다.
 즉, 힙에 저장된 각각의 원소들은 하나의 트리이다. (노드가 아니다)
+*Minimum Heap
+: complete binary tree + heap property (부모는 자식 노드보다 작다.)
 //1. store all runs into the heap.
 //2. while the heap size >1 do
 //	(1) perfor extractMin two times
@@ -88,10 +90,22 @@ count=1로 reset하고 다시 반복한다.
 //	(3) insert the combined tree into the heap.
 //3. Let the Root be the root of the tree
 
-
-*Minimum Heap
-: complete binary tree + heap property (부모는 자식 노드보다 작다.)
-
-
+#Huffman Codeword부여하기
+:Huffman 트리의 리프 노드에 위치한 run들에게 이진 codeword를 부여할 것이다.
+assignCodeword(prefix, node){
+if node is a leaf
+	assign prefix to the node;
+else
+	assignCodeword(prefix+'0', node->left);
+	assignCodeword(prefix+'1', node->right);	
+}
+**고려해야할 사항.
+: run들의 codeword들은 임의의 길이의 이진수열이다. <--같은 길이로 만들어 줘야함.
+prefix를 하나의 32비트 정수로 표현한다. 하지만 32비트 중에서 하위 몇 비트만이 실제 부여된 codeword이다.
+따라서 codeword의 길이를 따로 유지해야한다.
+struct run{
+	int codeword; 	//부여된 codeword를 32비트 정수로 저장.
+	int codewordlen;	//부여된 codeword의 길이. 즉, codeword의 하위 codewordlen비트가 실제 codeword
+}
 
 

@@ -105,20 +105,32 @@ void HuffmanCoding() {
 
 void printHuffmanTree(Run node, int depth) {
 	for (int i = 0; i < depth; i++)
-		printf("%5s", " ");
+		printf("%20s", " ");
 	if (node == NULL) {
 		printf("null\n");
 	}
 	else {
-		printf("%c,%d\n", node->ch, node->freq);
+		printf("%c,%d,%d\n", node->ch, node->freq, node->codeword);
 		printHuffmanTree(node->left, depth + 1);
 		printHuffmanTree(node->right, depth + 1);
+	}
+}
+
+void assignCodewords(Run node, int codeword, int length) {
+	if (node->left == NULL && node->right == NULL) {
+		node->codeword = codeword;
+		node->codewordLen = length;
+	}
+	else {
+		assignCodewords(node->left, codeword << 1, length + 1);
+		assignCodewords(node->right, (codeword << 1) + 1, length + 1);
 	}
 }
 
 int main() {
 	array = (Run*)malloc(sizeof(Run)*array_size);
 	read_file("sample.txt");
+	/*
 	printf("%20s", "symbol");
 	for (int i = 0; i < array_count; i++) {
 		printf("%5c", array[i]->ch);
@@ -132,8 +144,8 @@ int main() {
 		printf("%5d", array[i]->freq);
 	}
 	printf("\n");
-
-
+	*/
+	
 	HuffmanCoding();
-	printHuffmanTree(root, 0);
+	assignCodewords(root, 0, 0);
 }
