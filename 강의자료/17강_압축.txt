@@ -108,4 +108,41 @@ struct run{
 	int codewordlen;	//부여된 codeword의 길이. 즉, codeword의 하위 codewordlen비트가 실제 codeword
 }
 
+#인코딩
+: 데이터 파일을 압축하기 위해서는 데이터 파일을 다시 시작부터 읽으면서 run을 하나씩 인식한 후 
+해단 run에 부여된 codeword를 검색한다.
+Huffman트리에는 모든 run들이 리프노드에 위치하므로 검색하기 불편하다. -> 검색하기 편리한 구조를 만들어야 함.
+
+#Array of Linked Lists.
+: 모든 run들을 symbol을 기준으로 연결리스트로 연결해서 배열로 저장한다. (각 run의 right 필드를 다음 노드를 가리키는 링크 필드로 사용.)
+symbol의 배열은 크기가 256인 배열. -> (symbol의 아스키 코드 번호에 해당 하는 값을 index로 사용하겠다.)
+*압축파일의 맨 앞부분(headr)에 파일을 구성하는 run들에 대힌 정보를 기록한다.
+이때 원본 파일의 길이도 함께 기록한다.=> 압축된 파일의 길이(총 bit 수)가 8의 배수가 된다는 보장이 없다.
+만약 20bit가 인코딩이 되면 4bit가 추가되어서 24bit가 인코딩이된다. 이렇게 덧붙여진 bit수를 식별하기위해서 원본 파일의 길이를 함께 기록!
+
+
+#Run 검색하기
+: symbol과 runLength가 주어질 때 배열 chars를 검색하여 해당하는 run을 찾아 반환하는 매서드 작성
+Run findRun(char symbol, int length)
+
+
+#outputFrequencies
+: 원본 파일을 구성하는 run들의 정보를 압축파일의 첫부분(header)부분에 저장하는 함수.
+
+#Encode
+void encode(RandomAccessFile fIn, RandomAccessFile fout){
+	while there remains bytes to read in the file{
+		recognize a run;
+		find the codeword for the run;
+		pack the codeword into the buffer;
+		if the buffer becomes full
+			write the buffer into the compressed file;
+	}
+	if buffer is not empty{
+		apeend 0s into the buffer;
+		write the buffer into the compressed file;
+	}
+}
+
+
 

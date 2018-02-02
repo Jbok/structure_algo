@@ -1,0 +1,94 @@
+Dynamic Programming
+========================================
+#Fibonacci Numbers
+: 가장 기본적인 recursion을 이용하는 방법.
+ int fib(int n){
+ 	if ( n==1 || n==2 )
+		return 1;
+	else
+		rereturn fib( n-2 ) + fib( n-1 );
+ }
+ *하지만 해당 방법을 살펴보면 많은 계산이 중복됨을 알 수 있다.
+ fib(7)= fib(6) + fib(5),  fib(6)=fib(5) + fib(4),   fib(5)=fib(4) + fib(3) // fib(2)를 8번 더하고 fib(1)를 5번더한다.
+ 이러한 비효율을 해결하는 방법 => Memoization.
+
+
+--------------------------------------------------------------------------
+#Memoization //중복된 계산을 피하는 방법
+ : recursion의 문제점. fib(7)을 계산할 때 이미 fib(5)를 계산했는데 fib(6)에서 다시 fib(5)를 계산해야 되는 것.
+ int fib( int n ){
+	if ( n==1 || n==2 )
+		return 1;
+	else if ( f[n] > -1 )		//배열 f는 -1로 초기화 되어 있다.
+		return f[n];	//즉 f[n] > -1 : 이미 계산된 값이라는 의미.
+	else{
+		f[n] = fib( n-2 ) + fib( n-1 );
+		return f[n];
+	}
+ }
+ *중간 계산 결과를 caching 함으로써 중복 계산을 피함.
+  f[1]=1, f[2]=1, f[3]=2. f[4]=3, f[5]=5 ...
+
+
+----------------------------------------------------------------------------
+#Dynamic Programming
+Bottom-up //중복된 계산을 피하는 또 다른 방법.
+ int fib( int b ){
+	f[1] = f[2] = 1;
+	for ( int i=3; i<=n; i++)
+		f[i] = f[i-1] + f[i-2];
+	return f[i];
+ }
+
+
+
+================================================
+#Binomial Coefficient(이항계수) 
+ : n개중 k개를 선택하는 경우의 수.
+ int binomial( int n, int k ){		//역시 많은 계산이 중복됨.
+	if ( n==k || k==0 )
+		return 1;
+	else
+		return binomioal( n-1, k ) + binomial( n-1, k-1);
+ }
+
+----------------------------------------------------------------------------------------
+#Memoization
+ int binomial( int n, int k ){
+	if ( n==k || k==0 )
+		return 1;
+	else if ( binom[n][k] > -1 ){		//배열 binom이 -1로 초기화되어 있다고 가정.
+		return binoml[n][k];
+	} else{
+		binom[n][k] = binomial( n-1, k )  + binomial( n-1, k-1 );
+		return binom[n][k]; 
+	}
+ }
+
+-----------------------------------------------------------------------------------------------
+#Dynamic Programming
+ int binomial( int i, int k ){
+	for ( int i=0; i<=n; i++){
+		for ( int j=0; j<=k &&  j<=i; j++){
+			if ( i==0 || j==k )
+				binom[i][j] =1;
+			else
+				binom[i][j] = binon[i-1][j-1] + binom[i-1][j];
+		}
+	}
+	return binom[n][k];
+ }
+ : bottom-up 방식은 가장 기본되는 계산식에서 부터 점차 마지막 계산식으로 증가하는 계산 방식.
+
+
+========================================================
+#Memoization vs. Dynamic Programming
+1. 순환식의 값을 계산하는 기법들이다.
+2. 둘 다 동적계획법의 일종으로 보기도 한다.
+3. Memoization은 top-down방식이며, 실제로 필요한 subproblem만을 푼다.
+4. 동적계획법은 bottom-up 방식이며, recursion에 수반되는 overhaed가 없다.
+
+
+
+
+
