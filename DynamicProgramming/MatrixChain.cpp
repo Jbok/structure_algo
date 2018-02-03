@@ -24,5 +24,5 @@ int matrixChain(int n) {
 }
 
 int main() {
-	printf("Hello World\n");
+	printf("Hello Worl d\n");
 }

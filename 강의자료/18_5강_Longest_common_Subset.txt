@@ -1,0 +1,41 @@
+#Longest Common Subsequence ( LCS )
+-<bcdb>는 문자열 <abcbdab>의 subsequence이다.
+-<bca>는 문자열 <abcbdab>와 <bdcaba>의 common subsequence이다.
+-Longest common subsequence(LCS)
+ : common subsequence들 중 가장 긴 것
+  <bcba>는 <abcbdab>와 <bdcaba>의 LCS이다.
+
+#Optimal Substructure
+x : 	<X>A<...>
+LCS z:	<Z>A
+y:	<Y>A<...>
+**<Z>는 <Y>와 <X>의 LCS이다. //순환식.
+L[i,j]: 문자열 X=<x1x2...xi>와 Y=<y1y2...yj>의 LCS의 길이
+
+경우1. xi = yj (문자열 X와 Y의 마지막 문자가 같다) //마지막 문자 xi는 LCS에 반드시 들어간다.
+	L[i,j]= L[i-1, j-1] +1
+
+경우2. xi!=yj  (문자열 X와 Y의 마지막 문자가 다르다) //어떠한 경우에도 마지막 문자 xi와 yj가 동시에 LCS에 속할 수 없다.
+	L[i, j] = max(L[i -1, j], L[i, j - 1]); L[i-1, j]는 xi를 버리는 경우, L[i, j -1]은 yj를 버리는 경우.
+
+##
+L[i, j]  	if. i = 0 or j = 0,	0
+	if xi = yj,		L[i - 1, j - 1] + 1
+	otherwise.	max(L[i - 1, j], L[i, j - 1])  
+//[0][0]부터 왼쪽 아래 대각선 방향의 순서로 계산해야함. ==> 가로로 계산하면 문제없다.
+
+int lcs(int m, int n) {
+	for (int i = 0; i <= m; i++) //if j == 0 
+		c[i][0] = 0;
+	for (int j = 0; j <= n; j++) //if i == 0
+		c[0][j] = 0;
+	for (int i = 0; i <= m; i++) {
+		for (int j = 0; j <= n; j++) {
+			if (x[i]==y[i])		//xi = yj,
+				c[i][j] = c[i - 1][j - 1] + 1;
+			else
+				c[i][j] = fmax(c[i - 1][j], c[i][j - 1]);
+		}
+	}
+	return c[m][n];
+}
