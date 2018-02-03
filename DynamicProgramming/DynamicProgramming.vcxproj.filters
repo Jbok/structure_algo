@@ -18,5 +18,8 @@
     <ClCompile Include="MatrixPath.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MatrixChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

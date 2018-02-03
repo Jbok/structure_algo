@@ -1,0 +1,31 @@
+#Matrix-Chain Multiplication
+: p*q 행렬A와 q*r 행렬B 곱하기 
+ void product( int a[][], int b[][], int c[][]){
+	for (int i=0;i<p;i++){
+		for(int j=0;j<r;j++){
+			c[i][j]=0;
+			for(int k=0;k<q; k++){
+				c[i][j]+=a[i][k]*b[k][j];
+			}
+		}
+	}
+ }
+//곱셈연산의 횟수 = pqr.
+
+#Matrix-Chain 특징.
+행렬 A는 10*100, B는 100*5, C는 5*50
+1. 세 행렬의 곱 ABC는 두 가지 방법으로 계산가능 (결합법칙이 성립)
+   (AB)C: 7,500번의 곱셈이 필요 (10*100*5 + 10*5*50)
+   A(BC): 75,000번의 곱셈이 필요 (100*5*50 + 10*100*50)
+=> 즉, 곱하는 순서에 따라서 연산량이 다름
+
+**n개의 행렬의 곱(A1A2A3..An)을 계산하는 최적의 순서는?
+A1 = P0*P1, A2 = P1*P2 ... 행렬이다.
+
+#Optimal Substructure
+: n개의 행렬의 곱의 최종 결과 Z는 직전의 두 행렬 X와 Y의 곱이다. //순환식을 찾자.
+(행렬 X, Y는  Ak를 기준으로 앞부분과 뒷부분의 곱이다.)
+*순환식으로 표현된 결과
+: m[i,j] = AiA(i+1)...Aj를 곱하는 최소곱셈 횟수.
+  m[i,j] = 0 (if i==j)
+	mini<=k<=j-1(m[i,k] + m[k+1,j] + p(i-1)p(k)p(j) if (i<j)

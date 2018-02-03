@@ -98,15 +98,18 @@ int mat_bottomup() {
 오른쪽이나 아래로 갈때 또 다른 2차원 배열에다가 방향을 추가하는 방법으로 구현하면 된다.
 */
 
-int main() {
-	mat_recursive(SIZE - 1, SIZE - 1);
 
-	init_memoization();
-	mat_memoization(SIZE - 1, SIZE - 1);
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			printf("%d ", Memo_arr[i][j]);
-		}
-		printf("\n");
-	}
+/*
+int main() {
+mat_recursive(SIZE - 1, SIZE - 1);
+
+init_memoization();
+mat_memoization(SIZE - 1, SIZE - 1);
+for (int i = 0; i < 4; i++) {
+for (int j = 0; j < 4; j++) {
+printf("%d ", Memo_arr[i][j]);
 }
+printf("\n");
+}
+}
+*/
