@@ -1,0 +1,43 @@
+#DAG(Directed Acyclic Graph)
+DAG는 방향 사이클(directed cycle)이 없는 방향 그래프.
+*방향 사이클이 없는: 닫힌 경로가 없는, 자기 자신으로 다시 돌아오는 경로가 없는 방향 그래프
+ex) 작업들의 우선순위
+
+#위상정렬(topological ordering)
+:DAG에서 노드들의 순서화 v1, v2, ..., vn, 단, 모든 에지(vi,vj)에 대해서 i<j가 되도록.
+*노드를 일렬로 나열하고 에지를 그렷을때 모든 에지의 방향이 왼쪽에서 오른쪽으로(정방향) 가야함.
+
+#위상정렬 알고리즘1
+노드에서 들어오는 에지(incoming), 나가는 에지(outgoing), 들어오는 에지의 수(indegree), 나가는 에지의 수 (outdegree)
+indegree가 0인 노드들을 탐색하고 그래프에서 제거한다. <ㅡ 반복
+
+topoligicalSort1(G){
+	for <- 1 to n{
+		진입간선이 없는 임의의 정점 u를 선택한다. (indegree가 0)
+		A[i] = u;
+		정점 u와 u의 진출간선을 모두 제거한다.
+	}
+	배열 A에는 정점들이 위상정렬되어 있다.
+} 
+//수행시간: O(n+m)
+1) indegree가 0인 노드가 존재하지 않으면?
+2) indegree가 0인 노드를 찾아야함, 정점u와 u의 진출간선을 모두 제거를 어떻게 구현할 것인가?
+
+#위상정렬 알고리즘2
+topologicalSort2(G){
+	for each v
+		visited[v] = NO;
+	make an empty linked list R;
+	for each v (정점의 순서는 상관없음)
+		if( visited[v] = NO) then
+			DFS-TS( v, R );
+}
+
+DFS-TS(v, R){
+	visited[v] <- YES;
+	for each x adjacent to v do
+		if (visited[x]= NO) then
+			DFS-TS(x, R);
+	add v at the front of the linked list R;
+}
+//알고리즘이 끝나면 연결리스트 R에는 정점들이 위상정렬된 순서로 매달려 있다.

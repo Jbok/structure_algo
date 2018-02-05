@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <malloc.h>
 #include "ALGraph.h"
 
 void GraphInit(ALGraph *pg, int nv) {
@@ -19,7 +20,6 @@ void GraphDestroy(ALGraph *pg) {
 
 void AddEdge(ALGraph *pg, int fromV, int toV) {
 	pg->numE++;
-	LInsert(&(pg->adjList[toV]), fromV);
 	LInsert(&(pg->adjList[fromV]), toV);
 }
 

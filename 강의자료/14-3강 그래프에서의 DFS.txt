@@ -1,0 +1,8 @@
+#Depth First Search(깊이우선순회)
+1. 출발점 s에서 시작한다.
+2. 현재 노드를 visited로 mark하고 인접한 노드들 중 unvisited 노드가 존재하면 그 노드로 간다.
+*인접한 노드들 모두 visited라면 이전의 노드로 되돌아간다. => Stack사용.
+3. 2번을 계속 반복한다.
+
+
+
