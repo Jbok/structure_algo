@@ -23,6 +23,9 @@ int matrixChain(int n) {
 	return m[1][n];
 }
 
+
+/*
 int main() {
 	printf("Hello Worl d\n");
 }
+*/
