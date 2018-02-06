@@ -1,8 +1,5 @@
-#include "ALGraph.h"
-#include <stdio.h>
-#include <malloc.h>
-#define SIZE 4
-#define EDGE 6
+#include "KruskalAlgorithm.h"
+
 struct edge {
 	int v1;
 	int v2;
@@ -14,6 +11,7 @@ typedef struct edge Edge;
 int p[SIZE];
 Edge temp[EDGE * 2];
 Edge edge[EDGE];
+
 
 void SaveEdge(ALGraph *pg) {
 	int vx;
@@ -94,28 +92,7 @@ void kruskal(ALGraph *ptr_g) {
 	for (int i = 0; i < EDGE; i++) {
 		if (find_set(edge[i].v1) != find_set(edge[i].v2))
 			printf("(%d,%d) w:%d\n", edge[i].v1, edge[i].v2, edge[i].value);
-			union_set(edge[i].v1, edge[i].v2);
+		union_set(edge[i].v1, edge[i].v2);
 	}
 
-}
-
-
-
-
-int main() {
-	ALGraph *ptr_g = (ALGraph*)malloc(sizeof(ALGraph));
-	GraphInit(ptr_g, SIZE);
-
-	AddEdge(ptr_g, 0, 1, 554);
-	AddEdge(ptr_g, 0, 2, 553);
-	AddEdge(ptr_g, 0, 3, 55);
-	AddEdge(ptr_g, 1, 2, 11);
-	AddEdge(ptr_g, 1, 3, 7);
-	AddEdge(ptr_g, 2, 3, 3);
-
-
-	ShowGraphEdgeInfo(ptr_g);
-
-	kruskal(ptr_g);
-	GraphDestroy(ptr_g);
 }
