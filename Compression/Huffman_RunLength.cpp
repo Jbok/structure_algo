@@ -1,10 +1,10 @@
 #include "heapsort.h"
 #define SIZE 4
 
-
 Run *array;
 Run *min_heap;
 Run root;
+Run chars[256];
 int array_count = 0;
 int array_size = SIZE;
 
@@ -29,6 +29,61 @@ int equals(Run run) {
 }
 
 void read_file(const char *filename) {
+	FILE *fp = fopen(filename, "rb");
+	if (fp == NULL) {
+		fputs("Error: File Open \n", stderr);
+		exit(1);
+	}
+
+	char prev = NULL; //이전 문자
+	char cur; //현재 문자
+	int byte_count = 1;
+
+	while ((cur = fgetc(fp)) != EOF) {
+		if (cur != prev) { //이전 문자와 같지않으면
+			Run temp = (Run)malloc(sizeof(run));
+			temp->ch = prev;
+			temp->runLen = byte_count;
+			temp->left = NULL;
+			temp->right = NULL;
+
+			int index = equals(temp);
+			if (index == -1) {//new symbol
+				temp->freq = 1;
+				array[array_count++] = temp;
+				if (array_count >= array_size) {
+					doubling_array();
+				}
+			}
+			else {//existed symbol
+				array[index]->freq++;
+			}
+			byte_count = 1;
+			prev = cur;
+		}
+		else {//같으면
+			byte_count++;
+		}
+	}
+	if (cur == EOF) { //EOF일 경우 마지막 symbol저장.
+		Run temp = (Run)malloc(sizeof(run));
+		temp->ch = prev;
+		temp->runLen = byte_count;
+		temp->left = NULL;
+		temp->right = NULL;
+		int index = equals(temp);
+		if (index == -1) {//new symbol
+			temp->freq = 1;
+			array[array_count++] = temp;
+		}
+		else {//existed symbol
+			array[index]->freq++;
+		}
+	}
+	fclose(fp);
+}
+
+void encode(const char *filename) {
 	FILE *fp = fopen(filename, "rb");
 	if (fp == NULL) {
 		fputs("Error: File Open \n", stderr);
@@ -127,9 +182,38 @@ void assignCodewords(Run node, int codeword, int length) {
 	}
 }
 
+void insertToArray(Run p) {
+	unsigned int index = p->ch;
+	Run temp = chars[index];
+	chars[index] = p;
+	p->right = temp;
+}
+
+void storeRunsIntoArray(Run p) {
+	if (p->left == NULL && p->right == NULL) {
+		insertToArray(p);
+	}
+	else {
+		storeRunsIntoArray(p->left);
+		storeRunsIntoArray(p->right);
+	}
+}
+
+Run findRun(char symbol, int length) {
+	unsigned int index = symbol;
+	Run temp = chars[index];
+	while (temp->runLen != length && temp != NULL) {
+		temp = temp->right;
+	}
+
+	return temp;
+}
+
 int main() {
+	const char* inFileNmae = "sample.txt";
 	array = (Run*)malloc(sizeof(Run)*array_size);
-	read_file("sample.txt");
+
+	read_file(inFileNmae);
 	/*
 	printf("%20s", "symbol");
 	for (int i = 0; i < array_count; i++) {
@@ -148,4 +232,6 @@ int main() {
 	
 	HuffmanCoding();
 	assignCodewords(root, 0, 0);
+	storeRunsIntoArray(root);
+
 }
