@@ -1,0 +1,98 @@
+=======================
+Kruskal의 알고리즘
+1) 에지들을 가중치의 오름차순으로 정렬한다.
+2) 에지들을 그 순서대로 하나씩 선택해간다. 단, 이미 선택된 에지들과 사이클(cycle)을 형성하면 선택하지 않는다.
+3) n-1개의 에지가 선택되면 종료한다.
+*왜 MST가 찾아지는가?
+: Kruskal의 알고리즘의 임의의 한 단계를 생각해보자.
+A를 현재까지 알고리즘이 선택한 에지의 집합이라고 하고, A를 포함하는 MST가 존재한다고 가정하자.
+
+#사이클 검사 (Kruskal 알고리즘의 핵심, 시간복잡도를 결정하는 부분)
+:초기 상태: 선택된 엣지 없음, 각각의 연결요소를 하나의 집합으로 표현.
+두 노드 사이의 엣지를 연결할때 같은 집합안에 존재한다면 cycle을 형성하기 때문에 불가능하다.
+1. 가중치가 최소인 에지를 고려한다.
+2. 두 에지가 서로 다른 집합에 속하면 에지를 선택하고 두 노드가 속한 집합을 합집합하여 하나의 집합으로 만든다.
+3. 두 에지가 서로 같은 집합에 속해있으면 다음 에지로 넘어간다.
+
+#Kruskal Algorithm pseudo code
+MST-KRUSKAL(G ,w)
+1. A = 공집합
+2 for each vertex v 부분집합 V[G]
+3.	각각의 노드들을 유일한 원소로 가지는 집합들을 만들어라.
+4. sort the edges of E into nondecresing order by weight w
+5. for each edge (u, v) 부분집합 E, taken in nondecreasing order by weight
+6.	u가 속한 집합과 v가 속한 집합이 다르다면
+7.		A에 {(u, v)}를추가하고 u와 v가 속한 두 집합을 하나로 합친다.
+8. return A
+
+#서로소인 집합들의 표현
+: disjoint sets을 find(u)와 union(u, v) 두 가지 연산을 지원할수 있는 알고리즘이 필요하다.
+Uninon-Find 알고리즘 => 각 집합을 하나의 트리로 표현.
+*집합의 각 원소들이 트리의 노드가 됨. 누가 루트이고 누가 누구의 부모이든 상관 없음. 
+**트리의 각 노드는 자식노드가 아닌 부모 노드의 주소를 가짐(상향식 트리) //상향식 트리는 하향식에 비해 간단하다.
+***모든 트리를 하나의 배열로 표현. p[a]=b //a의 부모 노드는 b이다.
+
+#Find-Set(v)
+: 자신이 속한 트리의 루트를 찾음
+1. if x != p[x]
+2. 	then p[x] <- Find-Set(p[x])
+3. return p[x]
+//O(h), h는 트리의 높이, h는 최악의 경우 O(n)
+
+#Union(u, v)
+: 한 트리의 루트를 다른 트리의 루트의 자식 노드로 만듬
+UNION(u, v)
+1. x=Find-Set(u);
+2. y=Find-Set(v);
+3, p[x]=y;
+//루트 노드를 찾은 이후에는 O(1), 하지만 루트를 찾는데 O(h)
+
+#Kruskal 알고리즘의 시간복잡도.
+MST-KRUSKAL(G ,w)
+1. A = 공집합
+2 for each vertex v 부분집합 V[G]
+3.	각각의 노드들을 유일한 원소로 가지는 집합들을 만들어라.  //O(n)
+4. sort the edges of E into nondecresing order by weight w
+5. for each edge (u, v) 부분집합 E, taken in nondecreasing order by weight
+6.	u가 속한 집합과 v가 속한 집합이 다르다면	//O(n)
+7.		A에 {(u, v)}를추가하고 u와 v가 속한 두 집합을 하나로 합친다.
+8. return A
+
+#Weighted Union 		//Find-Set의 시간 복잡도를 낮추는 방법
+Find-Set(v)의 시간 복잡도는 O(h), h는 트리의 높이
+즉, 트리의 높이를 낮추면 Find-Set의 시간복잡도가 낮아진다.
+*Weighted Union 구현방법
+: 두 집합을 union할 때 작은 트리의 루트를 큰 트리의 루트의 자식으로 만듬. (크기는 노드의 개수)
+각 트리의 크기(노드의 개수)를 카운트하고 있어야 한다.
+WEIGHTED-UNION(u, v)
+1. x=FIND-SET(u);
+2. y=FIND-SET(v);
+3. if size[x]>size[y] then
+4.	p[y]=x;
+5.	size[y]=size[x]+[y];
+6. else
+7. 	p[x]=y;
+8.	size[x]=size[y]+size[x];
+// O(log n)
+
+#Path Compression	 //Find-Set의 시간 복잡도를 낮추는 방법
+FIND-SET-PC(x)		//Find를 하면서 부모노드를 부모노드의 부모노드로 옮기면서 압축 시켜버린다.  
+1. while x != p[x]
+2.	p[x] <- p[p[x]];	//트리의 해당 경로의 길이를 절반으로 나눠준다. 자신의 부모노드를 할아버지 노드로 옮긴다.
+3.	x <- p[x];
+4. end
+5. return p[x];
+
+
+#WUPC (Weighted Union with Path Compression) 
+: M번의 union-find 연산의 총 시간복잡도는 O(N+ M* log*N). 여기서 N은 원소의 개수
+거의 선형시간 알고리즘, 즉 한 번의 Find 혹은 Union이 거의 O(1)시간
+ex. (N=2^65536, log*N=5), log*N=loglogloglog...logN이 1이되는 log가 반복되는 횟수.
+
+
+#Kruskal 알고리즘의 시간복잡도
+Initialize A: 	O(1)
+First for loop: 	|V| MAKE-SETs	//O(n)
+Sort E:		O(|E|log2|E|)	//O(mlogm)
+Second for loop:	O(|E|) FIND-SETs and UNIONs?  //~O(m)
+==> O(|E|log2|E|) //Sort E가 결정!
